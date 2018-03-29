@@ -178,6 +178,23 @@ public class ReportApiTest extends AbstractRestApiTest {
 		confirmSingularReport(lister, viewer, reportUuid, rptUpdate.get("name").asText(), "an edited desc", "false", "reportFiles/Users_in_zip.rptdesign");
 		confirmDesignFile(viewer, reportUuid, "UsersReport.zip", "Users_in_zip.rptdesign", "Users_in_zip.rptdesign");
 
+		// Confirm a metadata update doesn't affect the files associated
+		rptUpdate = mapper.createObjectNode();
+		rptUpdate.put("name", "Report E2E AutoTest EDITED Metadata!" + System.currentTimeMillis());
+		rptUpdate.put("description", "an edited metadata desc");
+		rptUpdate.put("hideReport", "false");
+		rptUpdate.put("filename", "Users_in_zip.rptdesign");
+		uri = new URI(context.getBaseUrl() + API_PATH_REPORT+"/"+reportUuid);
+		putReq = getPut(uri.toString(), rptUpdate.toString());
+		putResponse = execute(putReq, false, editor.getToken());
+		status = putResponse.getStatusLine().getStatusCode();
+		respStr = superSerialResponse(putResponse);
+		debug("Just called [%s] to edit a report and received [%s] - %s", uri.toString(), status, respStr);
+		assertEquals(status, 200);
+
+		confirmSingularReport(lister, viewer, reportUuid, rptUpdate.get("name").asText(), "an edited metadata desc", "false", "reportFiles/Users_in_zip.rptdesign");
+		confirmDesignFile(viewer, reportUuid, "UsersReport.zip", "Users_in_zip.rptdesign", "Users_in_zip.rptdesign");
+
 		deleteReport(deleter, reportUuid);
 
 		// check there's no available reports
