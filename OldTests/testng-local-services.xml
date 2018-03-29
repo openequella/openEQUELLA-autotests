@@ -5,7 +5,8 @@
 		<packages>	
 			<package name="com.tle.webtests.test.webservices" />
 			<package name="com.tle.webtests.test.webservices.rest" />
-			<package name="com.tle.webtests.test.webservices.soap" />	
+			<package name="com.tle.webtests.test.webservices.rest.report" />
+			<package name="com.tle.webtests.test.webservices.soap" />
 		</packages>
 	</test>
 </suite>

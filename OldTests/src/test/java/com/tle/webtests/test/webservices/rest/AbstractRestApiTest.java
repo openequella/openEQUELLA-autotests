@@ -242,6 +242,11 @@ public abstract class AbstractRestApiTest extends AbstractSessionTest
 		}
 	}
 
+	protected JsonNode getEntityOkIfNull(String uri, String token, Object... params) throws IOException {
+		HttpResponse response = execute(new HttpGet(appendQueryString(uri, queryString(params))), false, token);
+		return mapper.readTree(response.getEntity().getContent());
+	}
+
 	protected JsonNode getEntity(String uri, String token, Object... params) throws IOException
 	{
 		HttpResponse response = execute(new HttpGet(appendQueryString(uri, queryString(params))), false, token);
@@ -478,5 +483,9 @@ public abstract class AbstractRestApiTest extends AbstractSessionTest
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected void debug(String msg, Object... args) {
+		System.out.println(String.format(msg,args));
 	}
 }

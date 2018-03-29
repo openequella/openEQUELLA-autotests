@@ -138,6 +138,7 @@ tests:
       - com.tle.webtests.test.webservices.rest.SearchApiTest
       - com.tle.webtests.test.webservices.rest.TasksApiTest
       - com.tle.webtests.test.webservices.rest.TaxonomyApiTest
+      - com.tle.webtests.test.webservices.rest.ReportApiTest
       - com.tle.webtests.test.webservices.rest.UserGroupManagementApiTest
       - com.tle.webtests.test.webservices.soap.Soap51Test
       - com.tle.webtests.test.webservices.soap.SoapServicesTest
