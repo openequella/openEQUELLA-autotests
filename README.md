@@ -2,6 +2,7 @@
 
 Install SBT and one of the drivers for Chrome or Firefox (make sure the appropriate Browser is installed) -
 [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) or [geckodriver](https://github.com/mozilla/geckodriver/releases).
+Ensure that the path of these drivers is set in an environment variable.
 
 Copy the `config/resources/application.conf.example` to `config/resources/application.conf` and
 configure the `server.url` to point to your local EQUELLA server admin pages, for example:
@@ -21,16 +22,15 @@ In order to build and run this service you need the node package manager install
 
 Install purescript, bower and pulp:
 ```bash
-npm install -g purescript bower pulp
+yarn global add purescript bower pulp
 ```
-_Note:_ If you get an error message saying one (or more) of the packages failed to install, check you nodejs and npm versions.  For example, the default repos for Ubuntu (on 2017-07-21) have a bit older nodejs and npm versions, and the install failed.  Upgrading to node.js v6.11.1 and npm v3.10.10 and running with Administrator privileges allowed the install to succeed.  One possible upgrade path is to use a PPA.
 
 Compile and run the support server:
 ```bash
 cd IntegTester/ps
-npm install
+yarn install
 bower install
-npm run build
+yarn run build
 cd ../../
 sbt IntegTester/assembly
 java -jar IntegTester/target/scala-2.12/IntegTester-assembly-1.0.jar &
@@ -49,7 +49,7 @@ delete and re-create a set of institutions, one of which is the standard default
 
 ### Local or dev installation
 
-The EQUELLA you are testing must have some java VM options set in `manager/equellaserver-config.sh JAVA_OPTS`) to properly enable autotesting:
+The EQUELLA you are testing must have some java VM options set in the build configuration `manager/equellaserver-config.sh JAVA_OPTS`) to properly enable autotesting:
 ```
 -Dequella.autotest=true
 ```
@@ -66,7 +66,7 @@ show coverageJar
 
 ### Installing from installer zip
 
-You can install a local EQUELLA from an installer zip file if you point to it at `equella-installer-6.5.zip` in application.conf:
+You can install a local EQUELLA from an installer zip file if you point to it at `equella-installer-{version number}.zip` in application.conf:
 
 ```conf
 install {
@@ -86,7 +86,12 @@ By default:
 * It will be installed inside the `equella-install` folder.
 * The options for autotesting and coverage will be configured already.
 * It will be configured for the Postgres DB `equellatests` at `localhost:5432`, expected a username / password of `equellatests` / `password`.  These details can be changed as desired.
-
+```bash
+sudo -u postgres psql
+ CREATE DATABASE equellatests;
+ CREATE USER equellatests WITH PASSWORD 'password';
+ GRANT ALL PRIVILEGES ON equellatests TO equellatests; 
+```
 You can run the services scripts inside the `manager` folder of `equella-install` or you can run the `startEquella` and `stopEquella` sbt tasks.
 
 ### Install configuration and test institution importing
@@ -98,7 +103,7 @@ sbt configureInstall
 ```
 This will set the server administration password and initialise the default schema.
 If you have already done this step manually on your own install just make sure that the server admin password is set to the same thing
-as `server.password` is set to.
+as `server.password` is set to, and skip this step. Running this command after setting the admin password and default schema will simply error out.
 
 In order to run the tests you first need the test institutions which you can install with the following command:
 ```bash
@@ -116,6 +121,17 @@ sbt Tests/test OldTests/test
 
 The sbt output gives you the results of the ScalaCheck tests and you can read the HTML TestNG report at:
 `OldTests/target/testng/index.html`
+
+You can expect the autotests to run for at least 30-45 minutes, depending on your hardware. It is recommended to not interact with the computer while this is running, as various browser windows will pop up and should not be touched.
+If  you don't wish to see the windows popping up, headless mode is available when using Chrome as your browser. To enable this uncomment the flag in `config/resources/application.conf`
+```conf
+webdriver {
+  chrome {
+    driver = ${HOME}"/bin/chromedriver"
+    headless = true
+  }
+}
+```
 
 ## Creating a coverage report
 
