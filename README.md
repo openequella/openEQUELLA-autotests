@@ -2,7 +2,7 @@
 
 Install SBT and one of the drivers for Chrome or Firefox (make sure the appropriate Browser is installed) -
 [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) or [geckodriver](https://github.com/mozilla/geckodriver/releases).
-Ensure that the path of these drivers is set in an environment variable.
+Ensure that the path of these drivers is set in the PATH environment variable.
 
 Copy the `config/resources/application.conf.example` to `config/resources/application.conf` and
 configure the `server.url` to point to your local EQUELLA server admin pages, for example:
@@ -22,19 +22,23 @@ In order to build and run this service you need the node package manager install
 
 Install purescript, bower and pulp:
 ```bash
-yarn global add purescript bower pulp
+yarn global add purescript pulp
 ```
+
+**NOTE**
+ 
+ If you get an error message saying one (or more) of the packages failed to install, check your NodeJS version. This has been confirmed to work on NodeJS v8.10.0.
 
 Compile and run the support server:
 ```bash
 cd IntegTester/ps
 yarn install
-bower install
 yarn run build
 cd ../../
 sbt IntegTester/assembly
 java -jar IntegTester/target/scala-2.12/IntegTester-assembly-1.0.jar &
 ```
+
 
 ## Setting up for tests
 
@@ -49,7 +53,7 @@ delete and re-create a set of institutions, one of which is the standard default
 
 ### Local or dev installation
 
-The EQUELLA you are testing must have some java VM options set in the build configuration `manager/equellaserver-config.sh JAVA_OPTS`) to properly enable autotesting:
+The EQUELLA you are testing must have some java VM options set in the `JAVA_OPTS` in `manager/equellaserver-config.sh`) to properly enable autotesting:
 ```
 -Dequella.autotest=true
 ```
@@ -86,12 +90,16 @@ By default:
 * It will be installed inside the `equella-install` folder.
 * The options for autotesting and coverage will be configured already.
 * It will be configured for the Postgres DB `equellatests` at `localhost:5432`, expected a username / password of `equellatests` / `password`.  These details can be changed as desired.
+
+To manually create this database (assuming in a debian environment - or derivative):
+
 ```bash
 sudo -u postgres psql
  CREATE DATABASE equellatests;
  CREATE USER equellatests WITH PASSWORD 'password';
  GRANT ALL PRIVILEGES ON equellatests TO equellatests; 
 ```
+
 You can run the services scripts inside the `manager` folder of `equella-install` or you can run the `startEquella` and `stopEquella` sbt tasks.
 
 ### Install configuration and test institution importing
