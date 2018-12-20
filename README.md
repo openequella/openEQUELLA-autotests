@@ -20,7 +20,8 @@ For Chrome you must also edit `webdriver.chrome.driver` to point to the `chromed
 Some of the tests require supplementary services which are contained in a Scala/Purescript project.
 In order to build and run this service you need the node package manager installed (npm).
 
-Install purescript, bower and pulp:
+Install purescript and pulp:
+
 ```bash
 yarn global add purescript pulp
 ```
@@ -30,6 +31,7 @@ yarn global add purescript pulp
  If you get an error message saying one (or more) of the packages failed to install, check your NodeJS version. This has been confirmed to work on NodeJS v8.10.0.
 
 Compile and run the support server:
+
 ```bash
 cd IntegTester/ps
 yarn install
@@ -54,14 +56,17 @@ delete and re-create a set of institutions, one of which is the standard default
 ### Local or dev installation
 
 The EQUELLA you are testing must have some java VM options set in the `JAVA_OPTS` in `manager/equellaserver-config.sh`) to properly enable autotesting:
+
 ```
 -Dequella.autotest=true
 ```
+
 If you will be creating coverage reports you will also need to add the jacoco coverage agent:
 
 ```
 -javaagent:{jacocojarpath}=output=tcpserver
 ```
+
 You can get the path to use by running from the SBT command line:
 
 ```sbt
@@ -109,11 +114,13 @@ You can run an SBT task to configure the install options:
 ```bash
 sbt configureInstall
 ```
+
 This will set the server administration password and initialise the default schema.
 If you have already done this step manually on your own install just make sure that the server admin password is set to the same thing
 as `server.password` is set to, and skip this step. Running this command after setting the admin password and default schema will simply error out.
 
 In order to run the tests you first need the test institutions which you can install with the following command:
+
 ```bash
 sbt setupForTests
 ```
@@ -132,6 +139,7 @@ The sbt output gives you the results of the ScalaCheck tests and you can read th
 
 You can expect the autotests to run for at least 30-45 minutes, depending on your hardware. It is recommended to not interact with the computer while this is running, as various browser windows will pop up and should not be touched.
 If  you don't wish to see the windows popping up, headless mode is available when using Chrome as your browser. To enable this uncomment the flag in `config/resources/application.conf`
+
 ```conf
 webdriver {
   chrome {
