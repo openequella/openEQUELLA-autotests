@@ -71,8 +71,8 @@ public class MetadataMappingTest extends AbstractCleanupTest
 		assertNode(x, "RepeatingReplace", "Vocabulary");
 		assertNode(x, "RepeatingReplace", "Travel");
 
-		assertNode(x, "HTML", "html description");
-		assertNoNode(x, "HTML", text);
+		assertNode(x, "HTML", text);
+		assertNoNode(x, "HTML", "html description");
 		assertNode(x, "Literal", "Fixed value");
 		assertNoNode(x, "Literal", text);
 	}
