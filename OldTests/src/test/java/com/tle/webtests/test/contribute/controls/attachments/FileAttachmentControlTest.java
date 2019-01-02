@@ -48,10 +48,10 @@ public class FileAttachmentControlTest extends AbstractCleanupAutoTest
 
 		String scrapbookItem = context.getFullName("An authored page");
 		ItemListPage results = new MyResourcesPage(context, "scrapbook")
-            .load()
+			.load()
 			.authorWebPage(scrapbookItem, "A Page", "This is a verifiable attachment")
-            .resetFilters()
-            .results();
+			.resetFilters()
+			.results();
 		assertTrue(results.doesResultExist(scrapbookItem, 1));
 
 		itemName = context.getFullName("Web Page from scrapbook");
@@ -177,7 +177,7 @@ public class FileAttachmentControlTest extends AbstractCleanupAutoTest
 		}
 		catch( IOException e )
 		{
-            e.printStackTrace();
+			e.printStackTrace();
 		}
 		return newFile;
 	}
