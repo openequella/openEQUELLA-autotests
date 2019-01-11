@@ -15,32 +15,11 @@ server.password = systempassword
 For Chrome you must also edit `webdriver.chrome.driver` to point to the `chromedriver` binary.
 
 
-## Compiling and running the support server
+## Support server
 
 Some of the tests require supplementary services which are contained in a Scala/Purescript project.
-In order to build and run this service you need the node package manager installed (npm).
-
-Install purescript and pulp:
-
-```bash
-yarn global add purescript pulp
-```
-
-**NOTE**
- 
- If you get an error message saying one (or more) of the packages failed to install, check your NodeJS version. This has been confirmed to work on NodeJS v8.10.0.
-
-Compile and run the support server:
-
-```bash
-cd IntegTester/ps
-yarn install
-yarn run build
-cd ../../
-sbt IntegTester/assembly
-java -jar IntegTester/target/scala-2.12/IntegTester-assembly-1.0.jar &
-```
-
+The services are started up as part of the tests, however you will need to have `yarn` installed before
+the Javascript client side of these services can be built.
 
 ## Setting up for tests
 

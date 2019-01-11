@@ -5,6 +5,10 @@ import org.jdom2.input.sax.XMLReaders
 import sbt.Keys.{scalaVersion, version}
 import sbt.complete.DefaultParsers.spaceDelimited
 
+import scala.sys.process._
+import Path.rebase
+import sbt.Path
+
 import scala.collection.JavaConversions._
 
 name := "equella-autotests"
@@ -34,11 +38,12 @@ common
 
 lazy val config = (project in file("config")).settings(resourceDirectory in Compile := baseDirectory.value / "resources").settings(common)
 
-lazy val Tests = (project in file("Tests")).settings(common).dependsOn(config)
+lazy val IntegTester = project in file("IntegTester")
+
+lazy val Tests = (project in file("Tests")).settings(common).dependsOn(config, IntegTester)
 
 lazy val OldTests = (project in file("OldTests")).settings(common).dependsOn(Tests, config)
 
-val IntegTester = project in file("IntegTester")
 
 buildConfig in ThisBuild := {
   val defaultConfig = ConfigFactory.parseFile(file("project/build-defaults.conf"))
@@ -59,7 +64,8 @@ installDir := optPath(installConfig.value, "basedir").getOrElse(baseDirectory.va
 
 installOptions := {
   val ic = installConfig.value
-  val jacoco = Option(ic.getString("jacoco")).filter(_.nonEmpty).map(o => JacocoAgent(coverageJar.value, o))
+  val jacocoJar = coverageJar.value
+  val jacoco = Option(ic.getString("jacoco")).filter(_.nonEmpty).map(o => JacocoAgent(jacocoJar, o))
   val db = ic.getConfig("db")
   InstallOptions(
     installDir.value, file(sys.props("java.home")),
@@ -88,8 +94,11 @@ lazy val relevantClasses: Seq[String] => Boolean = {
 }
 
 coverageJar := {
-  update.value.select(module = moduleFilter("org.jacoco", "org.jacoco.agent"),
-    artifact = artifactFilter(classifier = "runtime")).head
+  update.value.select(
+    configurationFilter(AllPassFilter),
+    moduleFilter("org.jacoco", "org.jacoco.agent"),
+    artifactFilter(classifier = "runtime")
+  ).head
 }
 
 dumpCoverage := {
@@ -171,9 +180,7 @@ installEquella := {
     val baseInstaller = (installFiles * "*").get.head
     val installerJar = baseInstaller / "enterprise-install.jar"
     opts.writeXML(installSettings, baseInstaller)
-    val o = ForkOptions(runJVMOptions = Seq(
-      "-jar", installerJar.absolutePath
-    ))
+    val o = ForkOptions().withRunJVMOptions(Vector("-jar", installerJar.absolutePath))
     val args = Seq("--unsupported", installSettings.absolutePath)
     Fork.java(o, args)
     baseInstaller
@@ -182,7 +189,7 @@ installEquella := {
 
 def serviceCommand(opts: InstallOptions, cmd: String): Unit = {
   val serverScript = opts.installDir / "manager/equellaserver"
-  List(serverScript.absolutePath, cmd).!
+  List(serverScript.absolutePath, cmd) !
 }
 
 startEquella := serviceCommand(installOptions.value, "start")

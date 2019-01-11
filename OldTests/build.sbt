@@ -1,3 +1,5 @@
+import de.johoop.testngplugin.TestNGPlugin
+
 import scala.collection.JavaConversions._
 
 libraryDependencies ++= Seq(
@@ -7,7 +9,7 @@ libraryDependencies ++= Seq(
   "commons-httpclient" % "commons-httpclient" % "3.1" % Test
 )
 
-testNGSettings
+enablePlugins(TestNGPlugin)
 
 testNGOutputDirectory := (target.value / "testng").absolutePath
 
