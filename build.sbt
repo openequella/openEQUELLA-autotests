@@ -7,9 +7,7 @@ import sbt.complete.DefaultParsers.spaceDelimited
 
 import scala.sys.process._
 import Path.rebase
-import sbt.Path
-
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 name := "equella-autotests"
 
@@ -21,20 +19,6 @@ lazy val common = Seq(
 )
 
 common
-//
-//lazy val platform = (project in file("Platform/Plugins/com.tle.platform.common")).settings(common).settings(
-//  javaSource in Compile := baseDirectory.value / "src",
-//  javaSource in Test := baseDirectory.value / "test",
-//  libraryDependencies ++= Seq(
-//    "org.apache.commons" % "commons-compress" % "1.1",
-//    "com.github.equella.jpf" % "jpf" % "1.0.7",
-//    "com.google.guava" % "guava" % "18.0",
-//    "commons-beanutils" % "commons-beanutils" % "1.9.3",
-//    "org.slf4j" % "slf4j-api" % "1.7.5",
-//    "commons-codec" % "commons-codec" % "1.7",
-//    "junit" % "junit" % "4.12" % Test
-//  )
-//)
 
 lazy val config = (project in file("config")).settings(resourceDirectory in Compile := baseDirectory.value / "resources").settings(common)
 
@@ -116,7 +100,7 @@ coverageLoader := {
     log.info(s"Loading coverage data from ${f.absolutePath}")
     l.load(f)
   }
-  cc.getStringList("hosts").foreach { h =>
+  cc.getStringList("hosts").asScala.foreach { h =>
     val ind = h.indexOf(':')
     val (hname, port) = if (ind == -1) (h, 6300) else (h.substring(0, ind), h.substring(ind + 1).toInt)
     log.info(s"Collecting coverage from $h")

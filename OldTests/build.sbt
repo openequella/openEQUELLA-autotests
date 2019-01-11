@@ -1,6 +1,5 @@
 import de.johoop.testngplugin.TestNGPlugin
-
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 libraryDependencies ++= Seq(
   "org.testng" % "testng" % "6.11" % Test,
@@ -17,6 +16,6 @@ testNGParameters ++= Seq("-log", buildConfig.value.getInt("tests.verbose").toStr
 
 testNGSuites := {
   val tc = buildConfig.value.getConfig("tests")
-  tc.getStringList("suitenames").map(n => (baseDirectory.value / n).absolutePath)
+  tc.getStringList("suitenames").asScala.map(n => (baseDirectory.value / n).absolutePath)
 }
 
