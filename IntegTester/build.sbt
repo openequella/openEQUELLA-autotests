@@ -1,6 +1,6 @@
 import sbt.IO
-
 import Path.rebase
+
 import scala.sys.process.Process
 
 name := "IntegTester"
@@ -40,8 +40,11 @@ def runYarn(script: String, dir: File): Unit = {
 
 resourceGenerators in Compile += Def.task {
   val baseJs = baseDirectory.value / "ps"
-  runYarn("build", baseJs)
-  val outDir = (resourceManaged in Compile).value
-  val baseJsTarget = baseJs / "dist"
-  IO.copy((baseJsTarget ** ("*.js"|"*.css"|"*.json")).pair(rebase(baseJsTarget, outDir))).toSeq
+  val cached = FileFunction.cached(target.value / "pscache") { files =>
+    runYarn("build", baseJs)
+    val outDir = (resourceManaged in Compile).value
+    val baseJsTarget = baseJs / "dist"
+    IO.copy((baseJsTarget ** ("*.js"|"*.css"|"*.json")).pair(rebase(baseJsTarget, outDir)))
+  }
+  cached((baseJs / "src" ** "*").get.toSet).toSeq
 }.taskValue
