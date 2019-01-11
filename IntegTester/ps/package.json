@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "install": "psc-package install && mkdirp dist/www",
-    "build": "pulp browserify --to dist/www/app.js",
+    "build": "yarn install && pulp browserify --to dist/www/app.js",
     "watch": "pulp -w browserify --to ../target/scala-2.12/classes/www/app.js"
   },
   "dependencies": {
