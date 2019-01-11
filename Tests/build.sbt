@@ -47,5 +47,3 @@ testOptions in Test := Seq(
 )
 
 parallelExecution in Test := buildConfig.value.getBoolean("tests.parallel")
-
-exportJars := false

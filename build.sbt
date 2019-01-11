@@ -188,7 +188,10 @@ setupForTests := {
   run.run("equellatests.SetupForTests", (fullClasspath in (TestPrj, Test)).value.files, spaceDelimited("<arg>").parsed, log)
 }
 
-configureInstall := (runMain in (TestPrj, Test)).toTask(" equellatests.InstallFirstTime").value
+configureInstall := {
+  val run = (runner in (TestPrj, Test)).value
+  run.run("equellatests.InstallFirstTime", (fullClasspath in (TestPrj, Test)).value.files, Seq(), sLog.value)
+}
 
 aggregate in test := false
 
