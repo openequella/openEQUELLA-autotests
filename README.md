@@ -17,9 +17,9 @@ For Chrome you must also edit `webdriver.chrome.driver` to point to the `chromed
 
 ## Support server
 
-Some of the tests require supplementary services which are contained in a Scala/Purescript project.
-The services are started up as part of the tests, however you will need to have `yarn` installed before
-the Javascript client side of these services can be built.
+Some of the tests require supplementary services which are contained in a Scala/Purescript [project](IntegTester/).
+The services are started up as part of the tests, however you will need to have `yarn` installed globally before
+the Javascript client side of these services can be built. The support server contains two services, one for simulating an LMS integration and the other a simple service for echoing HTTP requests.
 
 ## Setting up for tests
 
