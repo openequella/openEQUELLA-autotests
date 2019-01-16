@@ -86,6 +86,17 @@ sudo -u postgres psql
 
 You can run the services scripts inside the `manager` folder of `equella-install` or you can run the `startEquella` and `stopEquella` sbt tasks.
 
+**NOTE**
+
+Ensure before starting openEQUELLA that `equella-install/learningedge-config/optional-config.properties` contains the correct `exiftool.path` and the `libav.path` so that the tests that 
+involve them run properly. LibAV has been replaced with FFMPeg, though you can use symbolic links to map the functions together. 
+
+```bash
+sudo ln -s /usr/bin/ffprobe /usr/bin/avprobe
+sudo ln -s /usr/bin/ffplay /usr/bin/avplay
+sudo ln -s /usr/bin/ffmpeg /usr/bin/avconv
+```
+
 ### Install configuration and test institution importing
 
 You can run an SBT task to configure the install options:
