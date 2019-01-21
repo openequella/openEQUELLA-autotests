@@ -117,6 +117,16 @@ sbt setupForTests
 
 ## Running all tests
 
+Before running the tests, ensure that the `application.conf` file contains the following:
+
+```conf
+tests {
+  suitenames = ["testng-codebuild.yaml"]
+  parallel = true
+}
+```
+This will set the TestNG suite to be the same as is run on the AWS CodeBuild server.
+
 The tests are seperated into two projects, one which is ScalaCheck property
 tests (`Tests`) and the other are TestNG based (`OldTests`):
 

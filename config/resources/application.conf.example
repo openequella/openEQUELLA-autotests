@@ -14,8 +14,8 @@ webdriver {
 }
 
 tests {
-//  suitenames = ["testng.xml"]
-//  parallel = false
+//  suitenames = ["testng-codebuild.yaml"]
+//  parallel = true
 }
 
 //install {
