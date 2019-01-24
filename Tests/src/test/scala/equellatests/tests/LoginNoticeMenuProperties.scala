@@ -7,6 +7,7 @@ import org.scalacheck.Prop
 import org.scalacheck.Prop.forAll
 
 object LoginNoticeMenuProperties extends ShotProperties ("Login Notice Menu Properties"){
+
   property("plaintext notice creation") = forAll { (w1: String) =>
     withLogon(autoTestLogon) { context =>
       val page = LoginNoticePage(context).load()
@@ -17,4 +18,5 @@ object LoginNoticeMenuProperties extends ShotProperties ("Login Notice Menu Prop
       Prop(page.getNoticeField==notice).label("Notice: " + notice + ", NoticeField: " + page.getNoticeField)
     }
   }
+
 }
