@@ -13,12 +13,15 @@ case class LoginNoticePage(ctx: PageContext) extends NewTitledPage("Login Notice
   def clickApply(): Unit = {
     this.applyButton.click()
   }
+
   def populateNoticeField(notice:String): Unit = {
     noticeField.sendKeys(Keys.chord(Keys.CONTROL, "a"))
     noticeField.sendKeys(Keys.DELETE)
     noticeField.sendKeys(notice)
   }
-  def getNoticeField:String = {
+
+  def getNoticeFieldContents:String = {
     noticeField.getText
   }
+
 }
