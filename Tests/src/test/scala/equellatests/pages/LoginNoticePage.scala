@@ -1,28 +1,29 @@
 package equellatests.pages
 
 import com.tle.webtests.framework.PageContext
+import com.tle.webtests.pageobject.ExpectedConditions2
 import equellatests.browserpage.NewTitledPage
 import org.openqa.selenium.{Keys, WebElement}
 
 case class LoginNoticePage(ctx: PageContext) extends NewTitledPage("Login Notice Editor", "page/loginconfiguration") {
 
-  def preNoticeApplyButton:WebElement = findElementById("preApplyButton")
+  private def preNoticeApplyButton:WebElement = findElementById("preApplyButton")
 
-  def preNoticeClearButton:WebElement = findElementById("preClearButton")
+  private def preNoticeClearButton:WebElement = findElementById("preClearButton")
 
-  def preNoticeField:WebElement = findElementById("preNoticeField")
+  private def preNoticeField:WebElement = findElementById("preNoticeField")
 
-  def postNoticeApplyButton:WebElement = findElementById("postApplyButton")
+  private def postNoticeApplyButton:WebElement = findElementById("postApplyButton")
 
-  def postNoticeClearButton:WebElement = findElementById("postClearButton")
+  private def postNoticeClearButton:WebElement = findElementById("postClearButton")
 
-  def postNoticeField:WebElement = findElementById("postNoticeField")
+  private def postNoticeField:WebElement = findElementById("postNoticeField")
 
-  def preTab:WebElement = findElementById("preTab")
+  private def preTab:WebElement = findElementById("preTab")
 
-  def postTab:WebElement = findElementById("postTab")
+  private def postTab:WebElement = findElementById("postTab")
 
-  def clearOkButton:WebElement = findElementById("okToClear")
+  private def clearOkButton:WebElement = findElementById("okToClear")
 
   def clickPreApply(): Unit = {
     this.preNoticeApplyButton.click()
@@ -70,5 +71,9 @@ case class LoginNoticePage(ctx: PageContext) extends NewTitledPage("Login Notice
   def getPostNoticeFieldContents:String = {
     postNoticeField.getText
   }
+  def pageUpdateExpectation = ExpectedConditions2.presenceOfElement(preNoticeField)
 
+  def waitForLoad(): Unit = {
+    waitFor(pageUpdateExpectation)
+  }
 }
