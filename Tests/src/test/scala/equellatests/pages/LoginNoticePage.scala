@@ -3,7 +3,8 @@ package equellatests.pages
 import com.tle.webtests.framework.PageContext
 import com.tle.webtests.pageobject.ExpectedConditions2
 import equellatests.browserpage.NewTitledPage
-import org.openqa.selenium.{Keys, WebElement}
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.{By, Keys, WebElement}
 
 case class LoginNoticePage(ctx: PageContext) extends NewTitledPage("Login Notice Editor", "page/loginconfiguration") {
 
@@ -25,55 +26,67 @@ case class LoginNoticePage(ctx: PageContext) extends NewTitledPage("Login Notice
 
   private def clearOkButton:WebElement = findElementById("okToClear")
 
-  def clickPreApply(): Unit = {
-    this.preNoticeApplyButton.click()
-  }
-
-  def clickPreClear(): Unit = {
-    this.preNoticeClearButton.click()
-    this.clearOkButton.click()
-  }
-
-  def populatePreNoticeField(notice:String): Unit = {
-
+  private def populatePreNoticeField(notice:String): Unit = {
     preNoticeField.sendKeys(Keys.chord(Keys.CONTROL, "a"))
     preNoticeField.sendKeys(Keys.DELETE)
     preNoticeField.sendKeys(notice)
   }
+  
+  private def waitForSnackBar(content:String): Unit = {
+    waitFor(ExpectedConditions.textToBePresentInElementLocated(By.id("client-snackbar"), content))
+  }
 
+  private def waitForPostTab(): Unit = {
+    waitFor(ExpectedConditions2.presenceOfElement(postNoticeField))
+  }
+
+  def setPreLoginNotice(notice:String): Unit = {
+    populatePreNoticeField(notice)
+    preNoticeApplyButton.click()
+    waitForSnackBar("Login notice saved successfully.")
+  }
+  
+  def clearPreLoginNotice(): Unit = {
+    preNoticeClearButton.click()
+    waitFor(ExpectedConditions2.presenceOfElement(clearOkButton))
+    clearOkButton.click()
+    waitForSnackBar("Login notice cleared successfully.")
+  }
+  
   def getPreNoticeFieldContents:String = {
     preNoticeField.getText
   }
-  
-  def clickPostApply(): Unit = {
-    this.postNoticeApplyButton.click()
+
+  def setPostLoginNotice(notice:String): Unit = {
+    gotoPostNoticeTab()
+    populatePostNoticeField(notice)
+    postNoticeApplyButton.click()
+    waitForSnackBar("Login notice saved successfully.")
   }
 
-  def clickPostClear(): Unit = {
-    this.postNoticeClearButton.click()
-    this.clearOkButton.click()
+  def clearPostLoginNotice(): Unit = {
+    gotoPostNoticeTab()
+    postNoticeClearButton.click()
+    waitFor(ExpectedConditions2.presenceOfElement(clearOkButton))
+    clearOkButton.click()
+    waitForSnackBar("Login notice cleared successfully.")
   }
 
-  def clickPreTab(): Unit = {
-    this.preTab.click()
+  def getPostNoticeFieldContents:String = {
+    gotoPostNoticeTab()
+    postNoticeField.getText
   }
 
-  def clickPostTab(): Unit = {
+  def gotoPostNoticeTab(): Unit = {
     this.postTab.click()
+    waitForPostTab()
   }
 
   def populatePostNoticeField(notice:String): Unit = {
+    gotoPostNoticeTab()
     postNoticeField.sendKeys(Keys.chord(Keys.CONTROL, "a"))
     postNoticeField.sendKeys(Keys.DELETE)
     postNoticeField.sendKeys(notice)
   }
 
-  def getPostNoticeFieldContents:String = {
-    postNoticeField.getText
-  }
-  def pageUpdateExpectation = ExpectedConditions2.presenceOfElement(preNoticeField)
-
-  def waitForLoad(): Unit = {
-    waitFor(pageUpdateExpectation)
-  }
 }

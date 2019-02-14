@@ -28,5 +28,9 @@ case class LoginPage(ctx: PageContext) extends LoadablePage {
 
   def pageBy = By.id("_logonButton")
 
-  def loginNotice:WebElement = findElementById("loginNotice")
+  private def loginNotice:WebElement = findElementById("loginNotice")
+
+  def loginNoticeExists:Boolean = {
+    loginNotice.isDisplayed
+  }
 }
