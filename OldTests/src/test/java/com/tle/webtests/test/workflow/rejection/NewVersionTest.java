@@ -21,14 +21,12 @@ import com.tle.webtests.test.AbstractCleanupTest;
 public class NewVersionTest extends AbstractCleanupTest
 {
 	private static final String BACKTICK_PASSWORD = "``````";
-
 	private static final String SORTING = "datemodified";
-
 	private static final String ADMIN_USERNAME = "admin";
-
 	private static final String FIRST_MODERATOR_USERNAME = "SimpleModerator";
-
 	private static final String SECOND_MODERATOR_USERNAME = "SecondStepModerator";
+	private static final String STEP_NAME_ONE = "moderation step 1";
+	private static final String STEP_NAME_TWO = "moderation step 2";
 
 	public NewVersionTest()
 	{
@@ -43,12 +41,12 @@ public class NewVersionTest extends AbstractCleanupTest
 		WizardPageTab wizard = new ContributePage(context).load().openWizard("Move to Live During Moderation");
 		String itemFullName = context.getFullName("item");
 		String itemFullName2 = itemFullName + " 2";
-		saveItem(wizard,1,itemFullName);
+		saveItem(wizard, 1, itemFullName);
 		logout();
 
 		// Login as SimpleModerator and moderate the item at the first step.
 		logon(FIRST_MODERATOR_USERNAME, BACKTICK_PASSWORD);
-		doModeration( FIRST_MODERATOR_USERNAME, BACKTICK_PASSWORD, "moderation step 1", itemFullName, false );
+		doModeration(STEP_NAME_ONE, itemFullName, false);
 		logout();
 
 		//login as admin to validate that we can't create a new version while an item is still under moderation
@@ -62,19 +60,19 @@ public class NewVersionTest extends AbstractCleanupTest
 			alert.accept();
 			alertDisplayed = true;
 		}
-		assertTrue( alertDisplayed, "Failed to trigger check of new version not allowed when already version in moderation.");
+		assertTrue(alertDisplayed, "Failed to trigger check of new version not allowed when already version in moderation.");
 		logout();
 
 		// Login as the SecondStepModerator and moderate again because this workflow needs moderating twice.
 		logon(SECOND_MODERATOR_USERNAME, BACKTICK_PASSWORD);
-		doModeration( SECOND_MODERATOR_USERNAME, BACKTICK_PASSWORD, "moderation step 2", itemFullName, false );
+		doModeration(STEP_NAME_TWO, itemFullName, false);
 		logout();
 
 		// Now the item should be in a state where we're allowed to create a new version.
 		// login as admin and new version it.
 		logon(ADMIN_USERNAME, BACKTICK_PASSWORD);
 		wizard = SearchPage.searchAndView(context, itemFullName).adminTab().newVersion();
-		saveItem(wizard,1,itemFullName2);
+		saveItem(wizard, 1, itemFullName2);
 		// check that there is a version that is live, and one that is moderating.
 		ItemListPage itemList = getItemList(itemFullName);
 		assertEquals(itemList.getResultForTitle(itemFullName, 1).getStatus(), "live");
@@ -83,8 +81,8 @@ public class NewVersionTest extends AbstractCleanupTest
 
 		// Login as SimpleModerator and moderate the new version of this item at the first step.
 		logon(FIRST_MODERATOR_USERNAME, BACKTICK_PASSWORD);
-		doModeration(FIRST_MODERATOR_USERNAME, BACKTICK_PASSWORD, "moderation step 1", itemFullName2,false);
-		// After moderation, check that the item has gone life after the first moderation step
+		doModeration(STEP_NAME_ONE, itemFullName2,false);
+		// After moderation, check that the item has gone live after the first moderation step
 		itemList = getItemList(itemFullName2);
 		assertEquals(itemList.getResultForTitle(itemFullName2, 1).getStatus(), "live");
 		logout();
@@ -92,20 +90,18 @@ public class NewVersionTest extends AbstractCleanupTest
 		// Login as the SecondStepModerator and check that the item is still
 		// there to moderate, and is still live once moderated from second step.
 		logon(SECOND_MODERATOR_USERNAME, BACKTICK_PASSWORD);
-		doModeration(SECOND_MODERATOR_USERNAME,BACKTICK_PASSWORD,"", itemFullName2, true);
+		doModeration(null, itemFullName2, true);
 		logout();
 	}
 
-	private void doModeration( String username, String password, String stepName, String itemFullName, Boolean lastModeration ) {
+	private void doModeration(String stepName, String itemFullName, Boolean lastModeration) {
 		TaskListPage taskListPage = new TaskListPage(context).load();
 		ModerateListSearchResults modResults = taskListPage.exactQuery(itemFullName);
-		if(!lastModeration)
-		{
-			assertEquals(modResults.getStepName(itemFullName), stepName );
+		if(!lastModeration) {
+			assertEquals(modResults.getStepName(itemFullName), stepName);
 			modResults.moderate(itemFullName).accept();
 		}
-		else
-		{
+		else {
 			ModerationView tasksTab = modResults.moderate(itemFullName);
 			tasksTab.assignToMe();
 			tasksTab.accept();
